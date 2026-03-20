@@ -1,0 +1,106 @@
+<%- include('header') %>
+<div class="container">
+  <h1>Repositories</h1>
+
+  <div class="home-actions">
+    <form method="POST" action="/new" class="create-form">
+      <input type="text" name="name" placeholder="new-repository" required pattern="[a-zA-Z0-9._\-]+" title="Letters, numbers, dots, hyphens, underscores only">
+      <button type="submit">Create</button>
+    </form>
+    <button id="generate-btn" class="btn-generate">Generate Repo</button>
+  </div>
+
+  <div id="generate-result" class="generate-result" hidden>
+    <div class="generate-result-header">
+      <strong>Repository generated</strong>
+      <span class="generate-warning">Save the credential now — it will not be shown again.</span>
+    </div>
+    <div class="generate-field">
+      <span class="generate-label">Clone URL</span>
+      <div class="copy-row">
+        <code id="gen-clone-url"></code>
+        <button class="btn-copy" onclick="copyField('gen-clone-url', this)">Copy</button>
+      </div>
+    </div>
+    <div class="generate-field">
+      <span class="generate-label">Credential</span>
+      <div class="copy-row">
+        <code id="gen-credential"></code>
+        <button class="btn-copy" onclick="copyField('gen-credential', this)">Copy</button>
+      </div>
+    </div>
+    <div class="generate-field">
+      <span class="generate-label">Usage</span>
+      <div class="copy-row copy-row-block">
+        <pre id="gen-usage" style="flex:1;font-family:var(--mono);font-size:13px;line-height:1.6;white-space:pre;overflow-x:auto"></pre>
+        <button class="btn-copy" style="align-self:flex-start" onclick="copyField('gen-usage', this)">Copy</button>
+      </div>
+    </div>
+  </div>
+
+  <% if (error) { %>
+    <div class="error"><%= error %></div>
+  <% } %>
+
+  <% if (repos.length === 0) { %>
+    <p class="empty">No repositories yet. Create one above.</p>
+  <% } else { %>
+    <table class="repo-list">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Last commit</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for (const r of repos) { %>
+          <tr>
+            <td><a href="/<%= r.name %>"><%= r.name %></a></td>
+            <td class="date"><%= r.lastCommit || 'empty' %></td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  <% } %>
+</div>
+<script>
+  document.getElementById('generate-btn').addEventListener('click', async function () {
+    const btn = this;
+    btn.disabled = true;
+    btn.textContent = 'Generating…';
+    try {
+      const res = await fetch('/api/repos/generate', { method: 'POST' });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Request failed');
+      document.getElementById('gen-clone-url').textContent = data.cloneUrl;
+      document.getElementById('gen-credential').textContent = data.credential;
+      const remote = 'http://user:' + data.credential + '@' + data.cloneUrl.replace(/^https?:\/\//, '');
+      const repoName = data.cloneUrl.split('/').pop();
+      document.getElementById('gen-usage').textContent = [
+        'git init',
+        'echo "# ' + repoName + '" > README.md',
+        'git add .',
+        'git commit -m "Initial commit"',
+        'git remote add origin ' + remote,
+        'git push -u origin main',
+      ].join('\n');
+      document.getElementById('generate-result').hidden = false;
+      document.getElementById('generate-result').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } catch (err) {
+      alert('Failed to generate repository: ' + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Generate Repo';
+    }
+  });
+
+  function copyField(id, btn) {
+    const text = document.getElementById(id).textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.textContent = orig; }, 1500);
+    });
+  }
+</script>
+<%- include('footer') %>

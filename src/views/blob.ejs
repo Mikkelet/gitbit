@@ -1,0 +1,25 @@
+<%- include('header') %>
+<div class="container">
+  <div class="breadcrumb">
+    <a href="/<%= repo %>"><%= repo %></a>
+    <% const parts = filePath.split('/'); %>
+    <% let accumulated = ''; %>
+    <% for (let i = 0; i < parts.length; i++) { %>
+      <% accumulated += (i > 0 ? '/' : '') + parts[i]; %>
+      <% if (i < parts.length - 1) { %>
+        <span class="sep">/</span><a href="/<%= repo %>/tree/<%= branch %>/<%= accumulated %>"><%= parts[i] %></a>
+      <% } else { %>
+        <span class="sep">/</span><strong><%= parts[i] %></strong>
+      <% } %>
+    <% } %>
+  </div>
+
+  <% if (isBinary) { %>
+    <div class="binary-notice">Binary file (<%= size %> bytes)</div>
+  <% } else { %>
+    <div class="code-view">
+      <pre><code><%= content %></code></pre>
+    </div>
+  <% } %>
+</div>
+<%- include('footer') %>

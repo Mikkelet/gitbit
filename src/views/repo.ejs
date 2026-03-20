@@ -1,0 +1,79 @@
+<%- include('header') %>
+<div class="container">
+  <h1><a href="/<%= repo %>"><%= repo %></a></h1>
+
+  <div class="clone-url">
+    <span class="clone-label">Clone</span>
+    <code id="clone-url-code"><%= cloneUrl %></code>
+    <button class="btn-copy" onclick="copyCloneUrl(this)">Copy</button>
+  </div>
+
+  <% if (empty) { %>
+    <div class="empty-repo">
+      <p>This repository is empty. Push some code to get started:</p>
+      <pre>git clone <%= cloneUrl %>
+cd <%= repo %>
+echo "# <%= repo %>" > README.md
+git add README.md
+git commit -m "Initial commit"
+git push origin main</pre>
+    </div>
+  <% } else { %>
+    <% if (currentPath) { %>
+      <div class="breadcrumb">
+        <a href="/<%= repo %>"><%= repo %></a>
+        <% const parts = currentPath.split('/'); %>
+        <% let accumulated = ''; %>
+        <% for (let i = 0; i < parts.length; i++) { %>
+          <% accumulated += (i > 0 ? '/' : '') + parts[i]; %>
+          <span class="sep">/</span><a href="/<%= repo %>/tree/<%= branch %>/<%= accumulated %>"><%= parts[i] %></a>
+        <% } %>
+      </div>
+    <% } %>
+
+    <table class="file-tree">
+      <tbody>
+        <% for (const item of tree) { %>
+          <tr>
+            <td class="icon">
+              <% if (item.type === 'tree') { %>
+                <svg aria-hidden="true" height="16" viewBox="0 0 16 16" width="16" fill="#54aeff"><path d="M1.75 1A1.75 1.75 0 0 0 0 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0 0 16 13.25v-8.5A1.75 1.75 0 0 0 14.25 3H7.5a.25.25 0 0 1-.2-.1l-.9-1.2C6.07 1.26 5.55 1 5 1z"/></svg>
+              <% } else { %>
+                <svg aria-hidden="true" height="16" viewBox="0 0 16 16" width="16" fill="#848d97"><path d="M2 1.75C2 .784 2.784 0 3.75 0h6.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v9.586A1.75 1.75 0 0 1 13.25 16h-9.5A1.75 1.75 0 0 1 2 14.25Zm1.75-.25a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h9.5a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 9 4.25V1.5Zm6.75.062V4.25c0 .138.112.25.25.25h2.688l-.011-.013-2.914-2.914-.013-.011Z"/></svg>
+              <% } %>
+            </td>
+            <td>
+              <% if (item.type === 'tree') { %>
+                <a href="/<%= repo %>/tree/<%= branch %>/<%= item.name %>"><%= item.basename %></a>
+              <% } else { %>
+                <a href="/<%= repo %>/blob/<%= branch %>/<%= item.name %>"><%= item.basename %></a>
+              <% } %>
+            </td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+
+    <h2>Recent commits</h2>
+    <div class="commit-list">
+      <% for (const c of commits) { %>
+        <div class="commit-entry">
+          <a href="/<%= repo %>/commit/<%= c.hash %>" class="commit-hash"><%= c.shortHash %></a>
+          <span class="commit-msg"><%= c.message %></span>
+          <span class="commit-meta"><%= c.author %> &middot; <%= c.date %></span>
+        </div>
+      <% } %>
+    </div>
+    <a href="/<%= repo %>/commits/<%= branch %>">View all commits</a>
+  <% } %>
+</div>
+<script>
+  function copyCloneUrl(btn) {
+    navigator.clipboard.writeText(document.getElementById('clone-url-code').textContent).then(() => {
+      const orig = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.textContent = orig; }, 1500);
+    });
+  }
+</script>
+<%- include('footer') %>

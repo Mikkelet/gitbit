@@ -1,0 +1,40 @@
+<%- include('header') %>
+<div class="container">
+  <h1><a href="/<%= repo %>"><%= repo %></a> &mdash; Commit <%= commit.shortHash %></h1>
+
+  <div class="commit-detail">
+    <div class="meta-row">
+      <span class="label">Author</span>
+      <strong><%= commit.author %></strong>
+      <span style="color:var(--text-muted)">&lt;<%= commit.email %>&gt;</span>
+    </div>
+    <div class="meta-row">
+      <span class="label">Date</span>
+      <span class="date"><%= commit.date %></span>
+    </div>
+    <div class="commit-message"><%= commit.message %></div>
+  </div>
+
+  <% if (commit.stat) { %>
+    <h3>Changed files</h3>
+    <pre class="stat"><%= commit.stat %></pre>
+  <% } %>
+
+  <% if (diff) { %>
+    <h3>Diff</h3>
+    <div class="diff-view">
+      <% for (const line of diff.split('\n')) { %>
+        <% if (line.startsWith('+') && !line.startsWith('+++')) { %>
+          <div class="diff-add"><%= line %></div>
+        <% } else if (line.startsWith('-') && !line.startsWith('---')) { %>
+          <div class="diff-del"><%= line %></div>
+        <% } else if (line.startsWith('@@')) { %>
+          <div class="diff-hunk"><%= line %></div>
+        <% } else { %>
+          <div class="diff-ctx"><%= line %></div>
+        <% } %>
+      <% } %>
+    </div>
+  <% } %>
+</div>
+<%- include('footer') %>
