@@ -9,7 +9,7 @@ RUN npm ci --production
 
 COPY . .
 
-ENV QUICKGIT_ROOT=/data/repos
+ENV GITBIT_ROOT=/data/repos
 ENV PORT=3000
 
 EXPOSE 3000
