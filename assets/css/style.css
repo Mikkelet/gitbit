@@ -44,7 +44,6 @@ body {
 }
 
 .topnav .logo:hover { opacity: 0.85; text-decoration: none; }
-
 .topnav .logo svg { flex-shrink: 0; }
 
 /* Layout */

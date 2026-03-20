@@ -5,12 +5,14 @@ RUN apk add --no-cache git git-daemon \
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
-RUN npm ci --production
+COPY package.json package-lock.json* ./
+RUN npm install
 
 COPY . .
+RUN npm run build
 
 ENV HOST=0.0.0.0
+ENV NUXT_HOST=0.0.0.0
 ENV GITBIT_ROOT=/data/repos
 ENV PORT=3000
 
@@ -18,4 +20,4 @@ EXPOSE 3000
 
 VOLUME /data/repos
 
-CMD ["node", "server.js"]
+CMD ["node", ".output/server/index.mjs"]
