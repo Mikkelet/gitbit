@@ -1,0 +1,25 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" rx="96" fill="#1f2328"/>
+
+  <!-- Main branch vertical line -->
+  <line x1="176" y1="140" x2="176" y2="372" stroke="white" stroke-width="16" stroke-linecap="round"/>
+
+  <!-- Feature branch: split out from middle node -->
+  <path d="M 176 272 C 176 224 336 224 336 192" stroke="#0969da" stroke-width="16" fill="none" stroke-linecap="round"/>
+
+  <!-- Feature branch: merge back into top node -->
+  <path d="M 336 192 C 336 140 220 112 176 112" stroke="#0969da" stroke-width="16" fill="none" stroke-linecap="round"/>
+
+  <!-- Bottom commit (initial) -->
+  <circle cx="176" cy="400" r="28" fill="#1f2328" stroke="white" stroke-width="16"/>
+
+  <!-- Middle commit (branch point) -->
+  <circle cx="176" cy="272" r="28" fill="#1f2328" stroke="white" stroke-width="16"/>
+
+  <!-- Feature branch commit -->
+  <circle cx="336" cy="192" r="28" fill="#1f2328" stroke="#0969da" stroke-width="16"/>
+
+  <!-- Top commit (merge point) -->
+  <circle cx="176" cy="112" r="28" fill="#1f2328" stroke="white" stroke-width="16"/>
+</svg>
