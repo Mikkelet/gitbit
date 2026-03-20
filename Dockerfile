@@ -1,6 +1,7 @@
 FROM node:22-alpine
 
-RUN apk add --no-cache git git-daemon
+RUN apk add --no-cache git git-daemon \
+ && git config --system init.defaultBranch main
 
 WORKDIR /app
 
@@ -9,6 +10,7 @@ RUN npm ci --production
 
 COPY . .
 
+ENV HOST=0.0.0.0
 ENV GITBIT_ROOT=/data/repos
 ENV PORT=3000
 
