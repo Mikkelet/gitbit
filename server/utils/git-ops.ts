@@ -2,6 +2,7 @@ import { execFile } from 'child_process'
 import fs from 'fs'
 import path from 'path'
 import { config } from './config'
+import { remove as removeCredential } from './credentials'
 
 export function repoPath(name: string) {
   const safe = name.replace(/[^a-zA-Z0-9._-]/g, '')
@@ -33,7 +34,12 @@ export async function listRepos() {
         const log = await git(rp, ['log', '-1', '--format=%ci'])
         lastCommit = log.trim()
       } catch {}
-      repos.push({ name, path: e.name, lastCommit })
+      let createdAt: string | null = null
+      const createdFile = path.join(rp, '.created')
+      if (fs.existsSync(createdFile)) {
+        createdAt = fs.readFileSync(createdFile, 'utf8').trim()
+      }
+      repos.push({ name, path: e.name, lastCommit, createdAt })
     }
   }
   return repos
@@ -50,10 +56,52 @@ export function createRepo(name: string) {
       if (err) return reject(err)
       execFile(config.gitBinary, ['config', 'http.receivepack', 'true'], { cwd: rp }, (err2) => {
         if (err2) return reject(err2)
+        // Write creation timestamp for cleanup cron
+        fs.writeFileSync(path.join(rp, '.created'), new Date().toISOString())
         resolve({ name: safe, path: safe + '.git' })
       })
     })
   })
+}
+
+export function cleanupOldRepos(maxAgeDays = 30) {
+  if (!fs.existsSync(config.repoRoot)) return []
+  const entries = fs.readdirSync(config.repoRoot, { withFileTypes: true })
+  const now = Date.now()
+  const maxAgeMs = maxAgeDays * 24 * 60 * 60 * 1000
+  const removed: string[] = []
+
+  for (const e of entries) {
+    if (!e.isDirectory() || !e.name.endsWith('.git')) continue
+    const rp = path.join(config.repoRoot, e.name)
+    const createdFile = path.join(rp, '.created')
+
+    let createdAt: number
+    if (fs.existsSync(createdFile)) {
+      createdAt = new Date(fs.readFileSync(createdFile, 'utf8').trim()).getTime()
+    } else {
+      // Fallback: use directory birth time / ctime
+      const stat = fs.statSync(rp)
+      createdAt = (stat.birthtimeMs || stat.ctimeMs)
+    }
+
+    if (now - createdAt > maxAgeMs) {
+      const name = e.name.slice(0, -4)
+      fs.rmSync(rp, { recursive: true, force: true })
+      removeCredential(name)
+      removed.push(name)
+    }
+  }
+  return removed
+}
+
+export function getCreatedAt(repo: string): string | null {
+  const rp = repoPath(repo)
+  const createdFile = path.join(rp, '.created')
+  if (fs.existsSync(createdFile)) {
+    return fs.readFileSync(createdFile, 'utf8').trim()
+  }
+  return null
 }
 
 export async function getDefaultBranch(repo: string) {

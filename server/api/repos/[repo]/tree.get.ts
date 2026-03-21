@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
 
   const tree = await getTree(repo, ref, dirPath)
   const commits = await getLog(repo, ref, 5)
-  const host = getRequestHeader(event, 'host') || 'localhost:3000'
+  const host = getRequestHeader(event, 'host') || 'localhost:4000'
   const cloneUrl = `http://${host}/${repo}.git`
   return { repo, branch: ref, cloneUrl, tree, commits, empty: false, currentPath: dirPath }
 })

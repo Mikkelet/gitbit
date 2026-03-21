@@ -16,6 +16,10 @@ useHead({ title: `${repo} - gitbit` })
   <div class="container">
     <h1><NuxtLink :to="`/${repo}`">{{ repo }}</NuxtLink></h1>
 
+    <div v-if="data.expiresAt" class="expiry-notice">
+      This repository will be automatically deleted on {{ new Date(data.expiresAt).toLocaleDateString() }}.
+    </div>
+
     <div class="clone-url">
       <span class="clone-label">Clone</span>
       <code>{{ data.cloneUrl }}</code>

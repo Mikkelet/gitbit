@@ -53,6 +53,7 @@ async function generateRepo() {
       <div class="generate-result-header">
         <strong>Repository generated</strong>
         <span class="generate-warning">Save the credential now — it will not be shown again.</span>
+        <span class="generate-expiry">This repository will be automatically deleted after 30 days.</span>
       </div>
       <CopyField label="Clone URL" :value="generateResult.cloneUrl" />
       <CopyField label="Credential" :value="generateResult.credential" />

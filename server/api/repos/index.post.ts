@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
   if (!body?.name) {
     throw createError({ statusCode: 400, message: 'Name is required' })
   }
-  const host = getRequestHeader(event, 'host') || 'localhost:3000'
+  const host = getRequestHeader(event, 'host') || 'localhost:4000'
   const repo = await createRepo(body.name)
   return {
     ...repo,

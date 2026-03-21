@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
   const repo = await createRepo(repoId)
   const token = generateToken()
   store(repoId, token)
-  const host = getRequestHeader(event, 'host') || 'localhost:3000'
+  const host = getRequestHeader(event, 'host') || 'localhost:4000'
   return {
     repoId,
     credential: token,

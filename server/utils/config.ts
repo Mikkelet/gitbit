@@ -11,7 +11,7 @@ try {
 }
 
 export const config = {
-  port: Number(process.env.PORT) || 3000,
+  port: Number(process.env.PORT) || 4000,
   repoRoot: process.env.GITBIT_ROOT || path.join(os.homedir(), 'gitbit-repos'),
   gitHttpBackend,
   gitBinary: process.env.GIT_BINARY || 'git',
