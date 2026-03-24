@@ -1,0 +1,11 @@
+services:
+  gitbit:
+    build: .
+    ports:
+      - "4000:3000"
+    volumes:
+      - repos:/data/repos
+    restart: unless-stopped
+
+volumes:
+  repos:
