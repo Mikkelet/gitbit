@@ -12,7 +12,7 @@ async function generateRepo() {
   error.value = null
   try {
     const data = await $fetch('/api/repos/generate', { method: 'POST' })
-    const remote = 'http://user:' + data.credential + '@' + data.cloneUrl.replace(/^https?:\/\//, '')
+    const remote = 'https://user:' + data.credential + '@' + data.cloneUrl.replace(/^https?:\/\//, '')
     const repoName = data.cloneUrl.split('/').pop()
     generateResult.value = {
       cloneUrl: data.cloneUrl,
