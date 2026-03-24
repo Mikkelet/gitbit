@@ -9,6 +9,6 @@ export default defineEventHandler(async (event) => {
   const repo = await createRepo(body.name)
   return {
     ...repo,
-    cloneUrl: `http://${host}/${repo.path}`,
+    cloneUrl: `https://${host}/${repo.path}`,
   }
 })
