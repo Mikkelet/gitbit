@@ -19,9 +19,9 @@ RUN echo "0 0 * * * GITBIT_ROOT=/data/repos /usr/local/bin/node /app/scripts/cle
 ENV HOST=0.0.0.0
 ENV NUXT_HOST=0.0.0.0
 ENV GITBIT_ROOT=/data/repos
-ENV PORT=4000
+ENV PORT=3000
 
-EXPOSE 4000
+EXPOSE 3000
 
 VOLUME /data/repos
 
