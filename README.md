@@ -1,5 +1,7 @@
 # gitbit
 
+Try me: <https://gitbit.mthy.dev>
+
 A self-hosted, ephemeral git server with a built-in web UI. Generate throwaway repositories on demand, push to them over HTTP, browse them in the browser. Repos auto-expire after 30 days.
 
 Built with Nuxt 3 and `git-http-backend`.
