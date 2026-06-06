@@ -17,19 +17,6 @@ Built with Nuxt 3 and `git-http-backend`.
 docker compose up -d
 ```
 
-The UI is exposed on `http://localhost:4000`.
-
-Repos and credentials are persisted in the `repos` named volume (mounted at `/data/repos`).
-
-## Running locally
-
-```bash
-npm install
-npm run dev
-```
-
-The dev server listens on `http://localhost:4000`. Repos are stored under `~/gitbit-repos` by default.
-
 ## Usage
 
 1. Open the UI and click **Generate Repo**.
